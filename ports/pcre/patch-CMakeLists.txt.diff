@@ -1,0 +1,15 @@
+--- pcre-8.33/CMakeLists.txt.orig
++++ pcre-8.33/CMakeLists.txt
+@@ -874,9 +874,9 @@
+         SET(man3 ${man3_new})
+ ENDIF(PCRE_BUILD_PCRECPP)
+ 
+-INSTALL(FILES ${man1} DESTINATION man/man1)
+-INSTALL(FILES ${man3} DESTINATION man/man3)
+-INSTALL(FILES ${html} DESTINATION share/doc/pcre/html)
++#INSTALL(FILES ${man1} DESTINATION man/man1)
++#INSTALL(FILES ${man3} DESTINATION man/man3)
++#INSTALL(FILES ${html} DESTINATION share/doc/pcre/html)
+ 
+ # help, only for nice output
+ IF(BUILD_SHARED_LIBS)

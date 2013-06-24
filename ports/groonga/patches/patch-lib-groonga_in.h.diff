@@ -1,0 +1,30 @@
+--- groonga-3.0.4/lib/groonga_in.h.orig
++++ groonga-3.0.4/lib/groonga_in.h
+@@ -501,6 +501,13 @@
+ /* todo */
+ #  define GRN_BIT_SCAN_REV(v,r)  for (r = 31; r && !((1 << r) & v); r--)
+ #  define GRN_BIT_SCAN_REV0(v,r) GRN_BIT_SCAN_REV(v,r)
++# elif defined(__APPLE__) /* ATOMIC ADD */
++#  include <libkern/OSAtomic.h>
++#  define GRN_ATOMIC_ADD_EX(p,i,r) \
++  (r = OSAtomicAdd32(i, p) - i)
++/* todo */
++#  define GRN_BIT_SCAN_REV(v,r)  for (r = 31; r && !((1 << r) & v); r--)
++#  define GRN_BIT_SCAN_REV0(v,r) GRN_BIT_SCAN_REV(v,r)
+ # else /* ATOMIC ADD */
+ /* todo */
+ #  define GRN_BIT_SCAN_REV(v,r)  for (r = 31; r && !((1 << r) & v); r--)
+@@ -571,6 +578,13 @@
+ /* todo */
+ #  define GRN_SET_64BIT(p,v) \
+   (void)atomic_swap_64(p, v)
++# elif defined(__APPLE__) /* ATOMIC ADD */
++#  include <libkern/OSAtomic.h>
++#  define GRN_ATOMIC_ADD_EX(p,i,r) \
++  (r = OSAtomicAdd32(i, p) - i)
++/* todo */
++#  define GRN_BIT_SCAN_REV(v,r)  for (r = 31; r && !((1 << r) & v); r--)
++#  define GRN_BIT_SCAN_REV0(v,r) GRN_BIT_SCAN_REV(v,r)
+ # endif /* ATOMIC ADD */
+ /* todo */
+ # define GRN_BIT_SCAN_REV(v,r)  for (r = 31; r && !((1 << r) & v); r--)

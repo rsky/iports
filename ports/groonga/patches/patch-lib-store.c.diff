@@ -1,0 +1,30 @@
+--- groonga-3.0.4/lib/store.c.orig
++++ groonga-3.0.4/lib/store.c
+@@ -21,6 +21,10 @@
+ #include "output.h"
+ #include <string.h>
+ 
++#if (defined(__APPLE__) && defined(__arm__))
++#include <libkern/OSAtomic.h>
++#endif
++
+ /* rectangular arrays */
+ 
+ #define GRN_RA_SEGMENT_SIZE (1 << 22)
+@@ -600,9 +604,16 @@
+   }
+   // smb_wmb();
+   {
++#if (defined(__APPLE__) && defined(__arm__))
++    int64_t *location = (int64_t *)(einfo + pos);
++    int64_t oldValue = *location;
++    int64_t newValue = *((int64_t *)ei);
++    (void)OSAtomicCompareAndSwap64(oldValue, newValue, location);
++#else
+     uint64_t *location = (uint64_t *)(einfo + pos);
+     uint64_t value = *((uint64_t *)ei);
+     GRN_SET_64BIT(location, value);
++#endif
+   }
+   GRN_IO_SEG_UNREF(ja->io, *pseg);
+   grn_ja_free(ctx, ja, &eback);

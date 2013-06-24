@@ -1,0 +1,78 @@
+--- groonga-3.0.4/CMakeLists.txt.orig
++++ groonga-3.0.4/CMakeLists.txt
+@@ -79,12 +79,12 @@
+   "${GRN_DATA_DIR}/${GRN_QUERY_EXPANDER_TSV_RELATIVE_SYNONYMS_FILE}")
+ 
+ if(CMAKE_COMPILER_IS_GNUCXX)
+-  set(GRN_NO_WARNING_COMPILE_FLAGS
+-    "${GRN_NO_WARNING_COMPILE_FLAGS} -Wno-unused-but-set-variable")
+   set(GRN_NO_WARNING_COMPILE_FLAGS
+     "${GRN_NO_WARNING_COMPILE_FLAGS} -Wno-sign-compare")
+   set(GRN_C_COMPILE_FLAGS "${GRN_NO_WARNING_COMPILE_FLAGS} -Wno-pointer-sign")
+   set(GRN_CXX_COMPILE_FLAGS "${GRN_NO_WARNING_COMPILE_FLAGS} -fexceptions")
++  set(GRN_C_COMPILE_FLAGS "${GRN_C_COMPILE_FLAGS} -miphoneos-version-min=5.0")
++  set(GRN_CXX_COMPILE_FLAGS "${GRN_CXX_COMPILE_FLAGS} -miphoneos-version-min=5.0")
+ endif()
+ 
+ add_definitions(
+@@ -152,55 +152,11 @@
+ option(GRN_WITH_NFKC "use NFKC based UTF8 normalization." ON)
+ option(GRN_WITH_STATIC "build static library." OFF)
+ 
+-if(WIN32)
+-  ac_check_headers(winsock2.h)
+-  if(NOT ${HAVE_WINSOCK2_H} EQUAL 1)
+-    message(FATAL_ERROR "No winsock2.h found")
+-  endif()
+-  ac_check_lib(ws2_32 select)
+-  if(NOT ${HAVE_WS2_32_LIB} EQUAL 1)
+-    message(FATAL_ERROR "select() isn't found in ws2_32.lib")
+-  endif()
+-  set(USE_SELECT TRUE)
+-else()
+-  ac_check_headers(sys/epoll.h)
+-  if(${HAVE_SYS_EPOLL_H} EQUAL 1)
+-    ac_check_funcs(epoll_create)
+-    if(${HAVE_EPOLL_CREATE} EQUAL 1)
+-      set(USE_EPOLL TRUE)
+-    endif()
+-  endif()
+-
+-  if(NOT USE_EPOLL)
+-    ac_check_headers(sys/event.h)
+-    if(${HAVE_SYS_EVENT_H} EQUAL 1)
+-      ac_check_funcs(kevent)
+-      if(${HAVE_KEVENT} EQUAL 1)
+-        set(USE_KQUEUE TRUE)
+-      endif()
+-    endif()
+-
+-    if(NOT USE_KQUEUE)
+-      ac_check_headers(sys/poll.h)
+-      if(${HAVE_SYS_POLL_H} EQUAL 1)
+-        ac_check_funcs(poll)
+-        if(${HAVE_POLL} EQUAL 1)
+-          set(USE_POLL TRUE)
+-        endif()
+-      endif()
+-
+-      if(NOT USE_POLL)
+-        ac_check_funcs(select)
+-        if(${HAVE_SELECT} EQUAL 1)
+-          set(USE_SELECT TRUE)
+-          ac_check_headers(sys/select.h)
+-        endif()
+-
+-        if(NOT USE_SELECT)
+-          message(FATAL_ERROR "All epoll/kqueue/poll/select are missing")
+-        endif()
+-      endif()
+-    endif()
++ac_check_headers(sys/event.h)
++if(${HAVE_SYS_EVENT_H} EQUAL 1)
++  ac_check_funcs(kevent)
++  if(${HAVE_KEVENT} EQUAL 1)
++    set(USE_KQUEUE TRUE)
+   endif()
+ endif()
+ 

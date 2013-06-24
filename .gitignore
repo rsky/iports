@@ -1,0 +1,10 @@
+/Makefile
+/build/*
+/destroot/*
+/distfiles/*
+!/*/.gitkeep
+Icon
+.DS_Store
+.AppleDouble
+.LSOverride
+._*

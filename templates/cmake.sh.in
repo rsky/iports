@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -z "$BASE_DIR" ]; then
+    BASE_DIR="$(dirname "$0")/../.."
+    source "$BASE_DIR/common/_func.sh"
+    BASE_DIR="$(xrealpath "$BASE_DIR")"
+fi
+PORT_DIR="$BASE_DIR/ports/__port__"
+
+source "$BASE_DIR/common/__arch__.sh"
+
+test -d iports-build-__arch__ && rm -rf iports-build-__arch__
+mkdir iports-build-__arch__ || exit 1
+cd iports-build-__arch__
+
+cmake \
+    -D CMAKE_TOOLCHAIN_FILE:PATH="$BASE_DIR/cmake/Toolchain-__arch__.cmake" \
+    -D CMAKE_INSTALL_PREFIX:PATH="$PREFIX" \
+    -D CMAKE_BUILD_TYPE:STRING=Release \
+    .. \
+&& make -j4 \
+&& make install

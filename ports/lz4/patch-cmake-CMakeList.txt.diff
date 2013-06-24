@@ -1,0 +1,67 @@
+Index: cmake/CMakeLists.txt
+===================================================================
+--- cmake/CMakeLists.txt	(revision 95)
++++ cmake/CMakeLists.txt	(working copy)
+@@ -38,31 +38,13 @@
+     set(LZ4_SRCS ${LZ4_SRCS} ${LZ4_SRCS_LIB})
+ endif()
+ 
+-if (CMAKE_SYSTEM_PROCESSOR STREQUAL "64bit")
+-    message(STATUS "Build 64bit executable binary")
+-    add_executable(lz4c64 ${LZ4_SRCS})
+-    install(TARGETS lz4c64 RUNTIME DESTINATION "./")
+-    if(NOT BUILD_SHARED_LIBS)
+-        message(STATUS "Build 32bit executable binary")
+-        add_executable(lz4c32 ${LZ4_SRCS})
+-        install(TARGETS lz4c32 RUNTIME DESTINATION "./")
++message(STATUS "Build executable binary")
++add_executable(lz4c ${LZ4_SRCS})
++install(TARGETS lz4c RUNTIME DESTINATION bin)
+ 
+-        SET_TARGET_PROPERTIES(lz4c32 PROPERTIES
+-            COMPILE_FLAGS PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+-    endif()
+-else()
+-    message(STATUS "Build 32bit executable binary")
+-    add_executable(lz4c32 ${LZ4_SRCS})
+-    install(TARGETS lz4c32 RUNTIME DESTINATION "./")
+-endif()
+-
+ if(BUILD_SHARED_LIBS)
+     set(LZ4_SOVERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+-    if (CMAKE_SYSTEM_PROCESSOR STREQUAL "64bit")
+-        target_link_libraries(lz4c64 liblz4)
+-    else()
+-        target_link_libraries(lz4c32 liblz4)
+-    endif()
++    target_link_libraries(lz4c liblz4_static)
+ 	
+     # for static library
+     add_library(liblz4_static STATIC ${LZ4_SRCS_LIB})
+@@ -73,17 +55,6 @@
+         ARCHIVE DESTINATION lib
+     )
+ 
+-    # for shared library o
+-    add_library(liblz4 ${LZ4_SRCS_LIB})
+-    set_target_properties(liblz4 PROPERTIES
+-            OUTPUT_NAME lz4
+-            SOVERSION ${LZ4_SOVERSION})
+-
+-    install(TARGETS liblz4
+-        LIBRARY DESTINATION lib
+-        ARCHIVE DESTINATION lib
+-    )
+-    
+     install(FILES
+         ${SRC_DIR}/lz4.h
+         ${SRC_DIR}/lz4hc.h
+@@ -99,7 +70,7 @@
+ ADD_DEFINITIONS("-Wundef")
+ ADD_DEFINITIONS("-Wcast-align")
+ ADD_DEFINITIONS("-Wno-implicit-function-declaration")
+-ADD_DEFINITIONS("-Os -march=native -std=c99")
++ADD_DEFINITIONS("-Os -std=c99")
+ INCLUDE_DIRECTORIES (${SRC_DIR})
+ 
+ 

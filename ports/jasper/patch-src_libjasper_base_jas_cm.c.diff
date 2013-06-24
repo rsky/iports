@@ -1,0 +1,11 @@
+--- src/libjasper/base/jas_cm.c.orig
++++ src/libjasper/base/jas_cm.c
+@@ -485,6 +485,8 @@
+ 	long v;
+ 	jas_cmreal_t *bufptr;
+ 
++	memset(buf, 0, sizeof(buf));
++
+ 	if (xform->numinchans > in->numcmpts || xform->numoutchans > out->numcmpts)
+ 		goto error;
+ 
